@@ -1,4 +1,4 @@
-import { 
+import {
   Controller,
   Get,
   Post,
@@ -6,7 +6,7 @@ import {
   Delete,
   Param,
   Body,
-  HttpCode
+  HttpCode,
 } from '@nestjs/common';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { validate as isUuid } from 'uuid';
@@ -23,7 +23,7 @@ export class UserController {
   getAllUsers() {
     const users = this.userService.getAll();
     return users;
-}
+  }
 
   @Get(':id')
   getUserById(@Param('id') id: string) {
@@ -48,21 +48,18 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdatePasswordDto,
   ) {
-    console.log('Received ID:', id);
 
     if (!isUuid(id)) {
-      console.log('Invalid UUID. Throwing 400.');
       throw new BadRequestException('Invalid UUID');
     }
 
     const user = this.userService.updatePassword(id, updateUserDto);
-    console.log('updateUserPassword controller:', user);
 
     if (!user) {
       console.log('User not found. Throwing 404.');
       throw new NotFoundException(`User with id ${id} not found`);
     }
-  
+
     return user;
   }
 
@@ -72,7 +69,9 @@ export class UserController {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
+
     const user = this.userService.getById(id);
+
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }

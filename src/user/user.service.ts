@@ -14,8 +14,7 @@ export class UserService {
   }
 
   getById(id: string): User | null {
-    const user = this.users.find(user => user.id === id) || null;
-    console.log('Finding user by ID:', id, 'Result:', user);
+    const user = this.users.find((user) => user.id === id) || null;
     return user;
   }
 
@@ -33,30 +32,24 @@ export class UserService {
   }
 
   updatePassword(id: string, updateUserDto: UpdatePasswordDto): User | null {
-    console.log('Attempting to update password for ID:', id);
-  
     const user = this.getById(id);
-    console.log('User found in updatePassword:', user);
-  
+
     if (!user) {
-      console.log('User not found in updatePassword. Returning null.');
       return null;
     }
-  
+
     if (user.password !== updateUserDto.oldPassword) {
-      console.log('Old password does not match. Throwing ForbiddenException.');
       throw new ForbiddenException('Old password is incorrect');
     }
-  
+
     user.password = updateUserDto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
-  
-    console.log('Password updated successfully in updatePassword:', user);
+
     return { ...user, password: undefined };
   }
 
   delete(id: string): void {
-    this.users = this.users.filter(user => user.id !== id);
+    this.users = this.users.filter((user) => user.id !== id);
   }
 }
