@@ -43,4 +43,10 @@ export class TrackService {
   delete(id: string): void {
     this.tracks = this.tracks.filter(track => track.id !== id);
   }
+
+  clearArtistId(artistId: string): void {
+    this.tracks = this.tracks.map(track =>
+      track.artistId === artistId ? { ...track, artistId: null } : track,
+    );
+  }
 }
