@@ -12,7 +12,7 @@ import { AlbumModule } from './album/album.module';
     UserModule,
     forwardRef(() => ArtistModule),
     forwardRef(() => TrackModule),
-    AlbumModule
+    forwardRef(() => AlbumModule),
   ],
   controllers: [AppController],
   providers: [AppService],

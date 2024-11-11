@@ -7,14 +7,14 @@ import { UpdateTrackDto } from './dto/update-track.dto';
 
 @Injectable()
 export class TrackService {
-  private tracks: Track[] = [];
+  private tracksArr: Track[] = [];
 
   getAll(): Track[] {
-    return this.tracks;
+    return this.tracksArr;
   }
 
   getById(id: string): Track | null {
-    return this.tracks.find(track => track.id === id) || null;
+    return this.tracksArr.find(track => track.id === id) || null;
   }
 
   create(trackCreationData: CreateTrackDto): Track {
@@ -22,31 +22,37 @@ export class TrackService {
       id: uuidv4(),
       ...trackCreationData,
     };
-    this.tracks.push(freshTrack);
+    this.tracksArr.push(freshTrack);
     return freshTrack;
   }
 
   update(id: string, trackUpdateData: UpdateTrackDto): Track | null {
-    const index = this.tracks.findIndex(track => track.id === id);
+    const index = this.tracksArr.findIndex(track => track.id === id);
 
     if (index === -1) return null;
 
     const amendedTrack = {
-      ...this.tracks[index],
+      ...this.tracksArr[index],
       ...trackUpdateData,
     };
 
-    this.tracks[index] = amendedTrack;
+    this.tracksArr[index] = amendedTrack;
     return amendedTrack;
   }
 
   delete(id: string): void {
-    this.tracks = this.tracks.filter(track => track.id !== id);
+    this.tracksArr = this.tracksArr.filter(track => track.id !== id);
   }
 
   clearArtistId(artistId: string): void {
-    this.tracks = this.tracks.map(track =>
+    this.tracksArr = this.tracksArr.map(track =>
       track.artistId === artistId ? { ...track, artistId: null } : track,
+    );
+  }
+
+  clearAlbumId(albumId: string): void {
+    this.tracksArr = this.tracksArr.map(track =>
+      track.albumId === albumId ? { ...track, albumId: null } : track,
     );
   }
 }
