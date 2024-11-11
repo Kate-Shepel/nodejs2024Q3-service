@@ -7,8 +7,8 @@ It's a Home Library Service! Users can create, read, update, delete data about A
 ## Prerequisites
 
 - Install [Node.js](https://nodejs.org/en/download/package-manager) (version 22.9.0 or higher) and the npm package manager.
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Clone this repository: git clone https://github.com/Kate-Shepel/nodejs2024Q3-service
+- Install Git [Download & Install Git](https://git-scm.com/downloads).
+- Clone this repository: `git clone https://github.com/Kate-Shepel/nodejs2024Q3-service`
 - Switch to `develop-part-1` branch
 - To install all dependencies use [`npm install`](https://docs.npmjs.com/cli/install)
 
@@ -21,12 +21,13 @@ npm start
 
 or 
 
-- Production mode
+Production mode
     `npm run start:prod`
 
 ## Port
 
 Default port: 4000
+
 The app is served on `http://localhost:4000`
 
 Port value is stored in `.env` file and can be changed if required.
