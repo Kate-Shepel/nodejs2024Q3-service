@@ -55,7 +55,6 @@ export class UserController {
     const user = this.userService.updatePassword(id, updateUserDto);
 
     if (!user) {
-      console.log('User not found. Throwing 404.');
       throw new NotFoundException(`User with id ${id} not found`);
     }
 
