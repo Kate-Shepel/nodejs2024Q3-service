@@ -1,4 +1,4 @@
-import { Module, forwardRef  } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -17,5 +17,4 @@ import { AlbumModule } from './album/album.module';
   controllers: [AppController],
   providers: [AppService],
 })
-
 export class AppModule {}

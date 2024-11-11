@@ -1,4 +1,4 @@
-import { 
+import {
   Controller,
   HttpCode,
   Get,
@@ -6,7 +6,7 @@ import {
   Put,
   Delete,
   Param,
-  Body
+  Body,
 } from '@nestjs/common';
 import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { validate as isUuid } from 'uuid';

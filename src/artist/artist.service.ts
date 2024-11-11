@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  forwardRef
-} from '@nestjs/common';
+import { Injectable, Inject, forwardRef } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Artist } from './models/artist.model';
@@ -13,7 +9,6 @@ import { AlbumService } from '../album/album.service';
 
 @Injectable()
 export class ArtistService {
-
   constructor(
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
@@ -28,7 +23,7 @@ export class ArtistService {
   }
 
   getById(id: string): Artist | null {
-    return this.artistsArr.find(artist => artist.id === id) || null;
+    return this.artistsArr.find((artist) => artist.id === id) || null;
   }
 
   create(artistCreateData: CreateArtistDto): Artist {
@@ -41,7 +36,7 @@ export class ArtistService {
   }
 
   update(id: string, artistUpdateData: UpdateArtistDto): Artist | null {
-    const index = this.artistsArr.findIndex(artist => artist.id === id);
+    const index = this.artistsArr.findIndex((artist) => artist.id === id);
 
     if (index === -1) return null;
 
@@ -55,7 +50,7 @@ export class ArtistService {
   }
 
   delete(id: string): void {
-    this.artistsArr = this.artistsArr.filter(artist => artist.id !== id);
+    this.artistsArr = this.artistsArr.filter((artist) => artist.id !== id);
 
     this.trackService.clearArtistId(id);
     this.albumService.clearArtistId(id);

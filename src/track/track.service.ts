@@ -14,7 +14,7 @@ export class TrackService {
   }
 
   getById(id: string): Track | null {
-    return this.tracksArr.find(track => track.id === id) || null;
+    return this.tracksArr.find((track) => track.id === id) || null;
   }
 
   create(trackCreationData: CreateTrackDto): Track {
@@ -27,7 +27,7 @@ export class TrackService {
   }
 
   update(id: string, trackUpdateData: UpdateTrackDto): Track | null {
-    const index = this.tracksArr.findIndex(track => track.id === id);
+    const index = this.tracksArr.findIndex((track) => track.id === id);
 
     if (index === -1) return null;
 
@@ -41,17 +41,17 @@ export class TrackService {
   }
 
   delete(id: string): void {
-    this.tracksArr = this.tracksArr.filter(track => track.id !== id);
+    this.tracksArr = this.tracksArr.filter((track) => track.id !== id);
   }
 
   clearArtistId(artistId: string): void {
-    this.tracksArr = this.tracksArr.map(track =>
+    this.tracksArr = this.tracksArr.map((track) =>
       track.artistId === artistId ? { ...track, artistId: null } : track,
     );
   }
 
   clearAlbumId(albumId: string): void {
-    this.tracksArr = this.tracksArr.map(track =>
+    this.tracksArr = this.tracksArr.map((track) =>
       track.albumId === albumId ? { ...track, albumId: null } : track,
     );
   }

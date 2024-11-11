@@ -9,5 +9,4 @@ import { ArtistModule } from '../artist/artist.module';
   providers: [TrackService],
   exports: [TrackService],
 })
-
 export class TrackModule {}

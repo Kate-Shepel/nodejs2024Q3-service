@@ -48,7 +48,6 @@ export class UserController {
     @Param('id') id: string,
     @Body() updateUserDto: UpdatePasswordDto,
   ) {
-
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
