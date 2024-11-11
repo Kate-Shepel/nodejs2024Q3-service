@@ -28,9 +28,15 @@ export class FavoritesService {
 
   getAllFavorites() {
     return {
-      artists: this.favorites.artists.map(id => this.artistService.getById(id)),
-      albums: this.favorites.albums.map(id => this.albumService.getById(id)),
-      tracks: this.favorites.tracks.map(id => this.trackService.getById(id)),
+      artists: this.favorites.artists
+        .map(id => this.artistService.getById(id))
+        .filter(artist => artist !== null),
+      albums: this.favorites.albums
+        .map(id => this.albumService.getById(id))
+        .filter(album => album !== null),
+      tracks: this.favorites.tracks
+        .map(id => this.trackService.getById(id))
+        .filter(track => track !== null),
     };
   }
 
