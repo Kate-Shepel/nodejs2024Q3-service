@@ -2,7 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  UnprocessableEntityException
+  UnprocessableEntityException,
 } from '@nestjs/common';
 import { validate as isUuid } from 'uuid';
 
@@ -13,7 +13,6 @@ import { ArtistService } from '../artist/artist.service';
 
 @Injectable()
 export class FavoritesService {
-
   private favorites: Favorites = {
     artists: [],
     albums: [],
@@ -29,14 +28,14 @@ export class FavoritesService {
   getAllFavorites() {
     return {
       artists: this.favorites.artists
-        .map(id => this.artistService.getById(id))
-        .filter(artist => artist !== null),
+        .map((id) => this.artistService.getById(id))
+        .filter((artist) => artist !== null),
       albums: this.favorites.albums
-        .map(id => this.albumService.getById(id))
-        .filter(album => album !== null),
+        .map((id) => this.albumService.getById(id))
+        .filter((album) => album !== null),
       tracks: this.favorites.tracks
-        .map(id => this.trackService.getById(id))
-        .filter(track => track !== null),
+        .map((id) => this.trackService.getById(id))
+        .filter((track) => track !== null),
     };
   }
 
@@ -59,7 +58,9 @@ export class FavoritesService {
     }
 
     if (!favExists) {
-      throw new UnprocessableEntityException(`${type.slice(0, -1)} with id ${id} does not exist`);
+      throw new UnprocessableEntityException(
+        `${type.slice(0, -1)} with id ${id} does not exist`,
+      );
     }
 
     if (!this.favorites[type].includes(id)) {
@@ -75,7 +76,9 @@ export class FavoritesService {
     const index = this.favorites[type].indexOf(id);
 
     if (index === -1) {
-      throw new NotFoundException(`${type.slice(0, -1)} with id ${id} is not in favorites`);
+      throw new NotFoundException(
+        `${type.slice(0, -1)} with id ${id} is not in favorites`,
+      );
     }
 
     this.favorites[type].splice(index, 1);
