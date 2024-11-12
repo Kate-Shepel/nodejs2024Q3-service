@@ -1,21 +1,17 @@
 # Home Library Service
 
+## Description
+
+It's a Home Library Service! Users can create, read, update, delete data about Artists, Tracks and Albums, add them to Favorites in their own Home Library!
+
 ## Prerequisites
 
-- Git - [Download & Install Git](https://git-scm.com/downloads).
-- Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Install [Node.js](https://nodejs.org/en/download/package-manager) (version 22.9.0 or higher) and the npm package manager.
+- Install Git [Download & Install Git](https://git-scm.com/downloads).
+- Clone this repository: `git clone https://github.com/Kate-Shepel/nodejs2024Q3-service`
+- Switch to `develop-part-1` branch
+- To install all dependencies use [`npm install`](https://docs.npmjs.com/cli/install)
 
-## Downloading
-
-```
-git clone {repository URL}
-```
-
-## Installing NPM modules
-
-```
-npm install
-```
 
 ## Running application
 
@@ -23,9 +19,35 @@ npm install
 npm start
 ```
 
-After starting the app on port (4000 as default) you can open
+or 
+
+Production mode
+    `npm run start:prod`
+
+## Port
+
+Default port: 4000
+
+The app is served on `http://localhost:4000`
+
+Port value is stored in `.env` file and can be changed if required.
+
+After starting the app on port you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
+
+## Available Endpoints
+```
+  http://localhost:4000/user
+  http://localhost:4000/track
+  http://localhost:4000/artist
+  http://localhost:4000/album
+  http://localhost:4000/favs
+```
+More detailed description of application behaviour can be found [here](https://github.com/AlreadyBored/nodejs-assignments/blob/main/assignments/rest-service/assignment.md).
+
+**Important note:** The app database has already default values from the very start for convenience.
 
 ## Testing
 
