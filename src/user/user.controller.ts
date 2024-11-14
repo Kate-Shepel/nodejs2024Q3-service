@@ -10,7 +10,6 @@ import {
 } from '@nestjs/common';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { validate as isUuid } from 'uuid';
-
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
@@ -20,17 +19,17 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Get()
-  getAllUsers() {
-    const users = this.userService.getAll();
+  async getAllUsers() {
+    const users = await this.userService.getAll();
     return users;
   }
 
   @Get(':id')
-  getUserById(@Param('id') id: string) {
+  async getUserById(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const user = this.userService.getById(id);
+    const user = await this.userService.getById(id);
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
@@ -39,12 +38,12 @@ export class UserController {
   }
 
   @Post()
-  createUser(@Body() createUserDto: CreateUserDto) {
-    return this.userService.create(createUserDto);
+  async createUser(@Body() createUserDto: CreateUserDto) {
+    return await this.userService.create(createUserDto);
   }
 
   @Put(':id')
-  updateUserPassword(
+  async updateUserPassword(
     @Param('id') id: string,
     @Body() updateUserDto: UpdatePasswordDto,
   ) {
@@ -52,7 +51,7 @@ export class UserController {
       throw new BadRequestException('Invalid UUID');
     }
 
-    const user = this.userService.updatePassword(id, updateUserDto);
+    const user = await this.userService.updatePassword(id, updateUserDto);
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
@@ -63,16 +62,16 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteUser(@Param('id') id: string) {
+  async deleteUser(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
 
-    const user = this.userService.getById(id);
+    const user = await this.userService.getById(id);
 
     if (!user) {
       throw new NotFoundException(`User with id ${id} not found`);
     }
-    this.userService.delete(id);
+    await this.userService.delete(id);
   }
 }

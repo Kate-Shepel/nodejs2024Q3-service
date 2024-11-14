@@ -1,55 +1,68 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { User } from './models/user.model';
+import { UserEntity } from './models/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
-import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
 export class UserService {
-  private users: User[] = [];
+  constructor(
+    @InjectRepository(UserEntity)
+    private readonly userRepository: Repository<UserEntity>,
+  ) {}
 
-  getAll(): Omit<User, 'password'>[] {
-    return this.users.map(({ password, ...rest }) => rest);
+  async getAll(): Promise<Omit<UserEntity, 'password'>[]> {
+    const users = await this.userRepository.find();
+    return users.map(({ password, ...rest }) => rest);
   }
 
-  getById(id: string): User | null {
-    const user = this.users.find((user) => user.id === id) || null;
-    return user;
+  async getById(id: string): Promise<UserEntity | null> {
+    return await this.userRepository.findOneBy({ id });
   }
 
-  create(createUserDto: CreateUserDto): User {
-    const newUser: User = {
-      id: uuidv4(),
-      login: createUserDto.login,
-      password: createUserDto.password,
+  async create(createUserDto: CreateUserDto): Promise<Partial<UserEntity>> {
+    const newUser = this.userRepository.create({
+      ...createUserDto,
       version: 1,
       createdAt: Date.now(),
       updatedAt: Date.now(),
-    };
-    this.users.push(newUser);
-    return { ...newUser, password: undefined };
+    });
+  
+    await this.userRepository.save(newUser);
+  
+    newUser.password = undefined;
+  
+    return newUser;
   }
 
-  updatePassword(id: string, updateUserDto: UpdatePasswordDto): User | null {
-    const user = this.getById(id);
-
+  async updatePassword(
+    id: string,
+    updateUserDto: UpdatePasswordDto,
+  ): Promise<Partial<UserEntity> | null> {
+    const user = await this.getById(id);
+  
     if (!user) {
       return null;
     }
-
+  
     if (user.password !== updateUserDto.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
     }
-
+  
     user.password = updateUserDto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
-
-    return { ...user, password: undefined };
+  
+    await this.userRepository.save(user);
+  
+    user.password = undefined;
+  
+    return user;
   }
 
-  delete(id: string): void {
-    this.users = this.users.filter((user) => user.id !== id);
+  async delete(id: string): Promise<void> {
+    await this.userRepository.delete({ id });
   }
 }
