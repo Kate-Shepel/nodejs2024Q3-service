@@ -22,5 +22,5 @@ RUN ls -la && ls -la src && cat tsconfig.json && cat tsconfig.build.json
 # Открываем порт
 EXPOSE 4000
 
-# Запускаем приложение в production-режиме
-CMD ["node", "dist/src/main.js"]
+# Запускаем приложение
+CMD ["npm", "run", "start:dev"]
