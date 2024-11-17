@@ -1,4 +1,4 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -34,21 +34,29 @@ export class ArtistService {
     artistUpdateData: UpdateArtistDto,
   ): Promise<ArtistEntity | null> {
     const existingArtist = await this.getById(id);
-
+  
     if (!existingArtist) {
       return null;
     }
-
+  
     const amendedArtist = this.artistRepository.merge(
       existingArtist,
       artistUpdateData,
     );
-
+  
     return await this.artistRepository.save(amendedArtist);
   }
 
   async delete(id: string): Promise<void> {
+    const artistToDelete = await this.getById(id);
+
+    if (!artistToDelete) {
+      throw new NotFoundException(`Artist with id ${id} wasn't found`);
+    }
+
     await this.artistRepository.delete({ id });
+    // await this.albumService.clearArtistId(id);
+    // await this.trackService.clearArtistId(id);
     this.trackService.clearArtistId(id);
   }
 }

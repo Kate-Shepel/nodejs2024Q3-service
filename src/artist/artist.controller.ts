@@ -21,22 +21,22 @@ export class ArtistController {
   constructor(private readonly artistService: ArtistService) {}
 
   @Get()
-  getAllArtists() {
-    return this.artistService.getAll();
+  async getAllArtists() {
+    return await this.artistService.getAll();
   }
 
   @Get(':id')
-  getArtistById(@Param('id') id: string) {
+  async getArtistById(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-
-    const artist = this.artistService.getById(id);
-
+  
+    const artist = await this.artistService.getById(id);
+  
     if (!artist) {
       throw new NotFoundException(`Artist with id ${id} wasn't found`);
     }
-
+  
     return artist;
   }
 
@@ -46,7 +46,7 @@ export class ArtistController {
   }
 
   @Put(':id')
-  updateArtist(
+  async updateArtist(
     @Param('id') id: string,
     @Body() artistUpdateData: UpdateArtistDto,
   ) {
@@ -54,7 +54,7 @@ export class ArtistController {
       throw new BadRequestException('Invalid UUID');
     }
 
-    const amendedArtist = this.artistService.update(id, artistUpdateData);
+    const amendedArtist = await this.artistService.update(id, artistUpdateData);
 
     if (!amendedArtist) {
       throw new NotFoundException(`Artist with id ${id} wasn't found`);
@@ -65,17 +65,17 @@ export class ArtistController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteArtist(@Param('id') id: string) {
+  async deleteArtist(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-
-    const artistToDelete = this.artistService.getById(id);
-
+  
+    const artistToDelete = await this.artistService.getById(id);
+  
     if (!artistToDelete) {
       throw new NotFoundException(`Artist with id ${id} wasn't found`);
     }
-
-    this.artistService.delete(id);
+  
+    await this.artistService.delete(id);
   }
 }
