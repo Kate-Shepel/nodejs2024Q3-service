@@ -15,11 +15,22 @@ export class UserService {
 
   async getAll(): Promise<Omit<UserEntity, 'password'>[]> {
     const users = await this.userRepository.find();
-    return users.map(({ password, ...rest }) => rest);
+    return users.map(({ password, ...rest }) => ({
+      ...rest,
+      createdAt: Number(rest.createdAt),
+      updatedAt: Number(rest.updatedAt),
+    }));
   }
 
   async getById(id: string): Promise<UserEntity | null> {
-    return await this.userRepository.findOneBy({ id });
+    const user = await this.userRepository.findOneBy({ id });
+    if (!user) return null;
+
+    return {
+      ...user,
+      createdAt: Number(user.createdAt),
+      updatedAt: Number(user.updatedAt),
+    };
   }
 
   async create(createUserDto: CreateUserDto): Promise<Partial<UserEntity>> {
@@ -32,9 +43,12 @@ export class UserService {
   
     await this.userRepository.save(newUser);
   
-    newUser.password = undefined;
-  
-    return newUser;
+    return {
+      ...newUser,
+      createdAt: Number(newUser.createdAt),
+      updatedAt: Number(newUser.updatedAt),
+      password: undefined,
+    };
   }
 
   async updatePassword(
@@ -42,24 +56,27 @@ export class UserService {
     updateUserDto: UpdatePasswordDto,
   ): Promise<Partial<UserEntity> | null> {
     const user = await this.getById(id);
-  
+
     if (!user) {
       return null;
     }
-  
+
     if (user.password !== updateUserDto.oldPassword) {
       throw new ForbiddenException('Old password is incorrect');
     }
-  
+
     user.password = updateUserDto.newPassword;
     user.version += 1;
     user.updatedAt = Date.now();
-  
+
     await this.userRepository.save(user);
-  
-    user.password = undefined;
-  
-    return user;
+
+    return {
+      ...user,
+      createdAt: Number(user.createdAt),
+      updatedAt: Number(user.updatedAt),
+      password: undefined,
+    };
   }
 
   async delete(id: string): Promise<void> {
