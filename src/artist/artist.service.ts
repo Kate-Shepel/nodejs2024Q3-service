@@ -1,58 +1,54 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { Artist } from './models/artist.model';
+import { ArtistEntity } from './models/artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { TrackService } from '../track/track.service';
-import { AlbumService } from '../album/album.service';
+import { TrackService } from 'src/track/track.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
+    @InjectRepository(ArtistEntity)
+    private readonly artistRepository: Repository<ArtistEntity>,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
-    @Inject(forwardRef(() => AlbumService))
-    private readonly albumService: AlbumService,
   ) {}
 
-  private artistsArr: Artist[] = [];
-
-  getAll(): Artist[] {
-    return this.artistsArr;
+  async getAll(): Promise<ArtistEntity[]> {
+    return await this.artistRepository.find();
   }
 
-  getById(id: string): Artist | null {
-    return this.artistsArr.find((artist) => artist.id === id) || null;
+  async getById(id: string): Promise<ArtistEntity | null> {
+    return await this.artistRepository.findOneBy({ id });
   }
 
-  create(artistCreateData: CreateArtistDto): Artist {
-    const freshArtist: Artist = {
-      id: uuidv4(),
-      ...artistCreateData,
-    };
-    this.artistsArr.push(freshArtist);
-    return freshArtist;
+  async create(artistCreateData: CreateArtistDto): Promise<ArtistEntity> {
+    const freshArtist = this.artistRepository.create(artistCreateData);
+    return await this.artistRepository.save(freshArtist);
   }
 
-  update(id: string, artistUpdateData: UpdateArtistDto): Artist | null {
-    const index = this.artistsArr.findIndex((artist) => artist.id === id);
+  async update(
+    id: string,
+    artistUpdateData: UpdateArtistDto,
+  ): Promise<ArtistEntity | null> {
+    const existingArtist = await this.getById(id);
 
-    if (index === -1) return null;
+    if (!existingArtist) {
+      return null;
+    }
 
-    const amendedArtist = {
-      ...this.artistsArr[index],
-      ...artistUpdateData,
-    };
+    const amendedArtist = this.artistRepository.merge(
+      existingArtist,
+      artistUpdateData,
+    );
 
-    this.artistsArr[index] = amendedArtist;
-    return amendedArtist;
+    return await this.artistRepository.save(amendedArtist);
   }
 
-  delete(id: string): void {
-    this.artistsArr = this.artistsArr.filter((artist) => artist.id !== id);
-
+  async delete(id: string): Promise<void> {
+    await this.artistRepository.delete({ id });
     this.trackService.clearArtistId(id);
-    this.albumService.clearArtistId(id);
   }
 }
