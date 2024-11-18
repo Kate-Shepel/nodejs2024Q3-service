@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { validate as isUuid } from 'uuid';
 
 import { FavoritesEntity } from './models/favorites.entity';
 import { TrackService } from '../track/track.service';
@@ -40,11 +41,11 @@ export class FavoritesService {
   }
 
   async addFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
-    const favorites = await this.getAllFavorites();
-
-    if (!id) {
+    if (!isUuid(id)) {
       throw new BadRequestException(`Invalid UUID for ${type}`);
     }
+
+    const favs = await this.getAllFavorites();
 
     let entityExists;
 
@@ -54,7 +55,7 @@ export class FavoritesService {
         if (!entityExists) {
           throw new UnprocessableEntityException(`Artist with id ${id} does not exist`);
         }
-        favorites.artists.push(entityExists);
+        favs.artists.push(entityExists);
         break;
 
       case 'albums':
@@ -62,7 +63,7 @@ export class FavoritesService {
         if (!entityExists) {
           throw new UnprocessableEntityException(`Album with id ${id} does not exist`);
         }
-        favorites.albums.push(entityExists);
+        favs.albums.push(entityExists);
         break;
 
       case 'tracks':
@@ -70,34 +71,37 @@ export class FavoritesService {
         if (!entityExists) {
           throw new UnprocessableEntityException(`Track with id ${id} does not exist`);
         }
-        favorites.tracks.push(entityExists);
+        favs.tracks.push(entityExists);
         break;
     }
 
-    await this.favoritesRepository.save(favorites);
+    await this.favoritesRepository.save(favs);
   }
 
   async removeFavorite(type: 'artists' | 'albums' | 'tracks', id: string) {
-    const favorites = await this.getAllFavorites();
+    const favs = await this.getAllFavorites();
 
-    if (!id) {
+    if (!isUuid(id)) {
       throw new BadRequestException(`Invalid UUID for ${type}`);
     }
 
     switch (type) {
       case 'artists':
-        favorites.artists = favorites.artists.filter((artist) => artist.id !== id);
+        favs.artists = favs.artists.filter((artist) => artist.id !== id);
         break;
 
       case 'albums':
-        favorites.albums = favorites.albums.filter((album) => album.id !== id);
+        favs.albums = favs.albums.filter((album) => album.id !== id);
         break;
 
       case 'tracks':
-        favorites.tracks = favorites.tracks.filter((track) => track.id !== id);
+        favs.tracks = favs.tracks.filter((track) => track.id !== id);
         break;
+
+        default:
+          throw new BadRequestException(`Unknown type ${type}`);
     }
 
-    await this.favoritesRepository.save(favorites);
+    await this.favoritesRepository.save(favs);
   }
 }
