@@ -1,6 +1,5 @@
 import {
   Injectable,
-  NotFoundException,
   BadRequestException,
   UnprocessableEntityException,
 } from '@nestjs/common';
@@ -53,7 +52,9 @@ export class FavoritesService {
       case 'artists':
         entityExists = await this.artistService.getById(id);
         if (!entityExists) {
-          throw new UnprocessableEntityException(`Artist with id ${id} does not exist`);
+          throw new UnprocessableEntityException(
+            `Artist with id ${id} does not exist`,
+          );
         }
         favs.artists.push(entityExists);
         break;
@@ -61,7 +62,9 @@ export class FavoritesService {
       case 'albums':
         entityExists = await this.albumService.getById(id);
         if (!entityExists) {
-          throw new UnprocessableEntityException(`Album with id ${id} does not exist`);
+          throw new UnprocessableEntityException(
+            `Album with id ${id} does not exist`,
+          );
         }
         favs.albums.push(entityExists);
         break;
@@ -69,7 +72,9 @@ export class FavoritesService {
       case 'tracks':
         entityExists = await this.trackService.getById(id);
         if (!entityExists) {
-          throw new UnprocessableEntityException(`Track with id ${id} does not exist`);
+          throw new UnprocessableEntityException(
+            `Track with id ${id} does not exist`,
+          );
         }
         favs.tracks.push(entityExists);
         break;
@@ -98,8 +103,8 @@ export class FavoritesService {
         favs.tracks = favs.tracks.filter((track) => track.id !== id);
         break;
 
-        default:
-          throw new BadRequestException(`Unknown type ${type}`);
+      default:
+        throw new BadRequestException(`Unknown type ${type}`);
     }
 
     await this.favoritesRepository.save(favs);

@@ -40,9 +40,9 @@ export class UserService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
     });
-  
+
     await this.userRepository.save(newUser);
-  
+
     return {
       ...newUser,
       createdAt: Number(newUser.createdAt),

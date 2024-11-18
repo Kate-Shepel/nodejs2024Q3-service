@@ -53,9 +53,6 @@ export class AlbumService {
   }
 
   async clearArtistId(artistId: string): Promise<void> {
-    await this.albumRepository.update(
-      { artistId },
-      { artistId: null },
-    );
+    await this.albumRepository.update({ artistId }, { artistId: null });
   }
 }

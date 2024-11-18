@@ -30,13 +30,13 @@ export class ArtistController {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-  
+
     const artist = await this.artistService.getById(id);
-  
+
     if (!artist) {
       throw new NotFoundException(`Artist with id ${id} wasn't found`);
     }
-  
+
     return artist;
   }
 
@@ -69,13 +69,13 @@ export class ArtistController {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-  
+
     const artistToDelete = await this.artistService.getById(id);
-  
+
     if (!artistToDelete) {
       throw new NotFoundException(`Artist with id ${id} wasn't found`);
     }
-  
+
     await this.artistService.delete(id);
   }
 }

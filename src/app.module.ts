@@ -28,7 +28,13 @@ import { FavoritesEntity } from './favorites/models/favorites.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserEntity, ArtistEntity, AlbumEntity, TrackEntity, FavoritesEntity],
+      entities: [
+        UserEntity,
+        ArtistEntity,
+        AlbumEntity,
+        TrackEntity,
+        FavoritesEntity,
+      ],
       synchronize: true, // для разработки, в продакшене выключить
     }),
     UserModule,

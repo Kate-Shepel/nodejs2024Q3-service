@@ -1,4 +1,9 @@
-import { forwardRef, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -37,16 +42,16 @@ export class ArtistService {
     artistUpdateData: UpdateArtistDto,
   ): Promise<ArtistEntity | null> {
     const existingArtist = await this.getById(id);
-  
+
     if (!existingArtist) {
       return null;
     }
-  
+
     const amendedArtist = this.artistRepository.merge(
       existingArtist,
       artistUpdateData,
     );
-  
+
     return await this.artistRepository.save(amendedArtist);
   }
 
