@@ -55,24 +55,28 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
   - method **POST** /user - to create user
   - method **PUT** /user/:id - update user's password
   - method **DELETE** /user/:id - delete user
+
  `/artist`
   - method **GET** /artist - to get all artists
   - method **GET** /artist/:id - to get one artist by id
   - method **POST** /artist - to create new artist
   - method **PUT** /artist/:id - to update artist info
   - method **DELETE** /artist/:id - to delete album
+
  `/track`
   - method **GET** /track - to get all tracks
   - method **GET** /track/:id - to get one track by id
   - method **POST** /track - to create new track
   - method **PUT** /track/:id - to update track info
   - method **DELETE** /track/:id - to delete track
+
  `/album`
   - method **GET** /album - to get all albums
   - method **GET** /album/:id - to get one album by id
   - method **POST** /album - to create new album
   - method **PUT** /album/:id - to update album info
   - method **DELETE** /album/:id - to delete album
+
  `/favs`
   - method **GET** /favs - to get all favorites
   - method **POST** /favs/track/:id - to add track to the favorites
