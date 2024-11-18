@@ -21,16 +21,17 @@ export class TrackController {
   constructor(private readonly trackService: TrackService) {}
 
   @Get()
-  getAllTracks() {
-    return this.trackService.getAll();
+  async getAllTracks() {
+    return await this.trackService.getAll();
   }
 
   @Get(':id')
-  getTrackById(@Param('id') id: string) {
+  async getTrackById(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const track = this.trackService.getById(id);
+
+    const track = await this.trackService.getById(id);
 
     if (!track) {
       throw new NotFoundException(`Track with id ${id} wasn't found`);
@@ -40,19 +41,20 @@ export class TrackController {
   }
 
   @Post()
-  createTrack(@Body() trackCreationData: CreateTrackDto) {
-    return this.trackService.create(trackCreationData);
+  async createTrack(@Body() trackCreationData: CreateTrackDto) {
+    return await this.trackService.create(trackCreationData);
   }
 
   @Put(':id')
-  updateTrack(
+  async updateTrack(
     @Param('id') id: string,
     @Body() trackUpdateData: UpdateTrackDto,
   ) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const amendedTrack = this.trackService.update(id, trackUpdateData);
+
+    const amendedTrack = await this.trackService.update(id, trackUpdateData);
 
     if (!amendedTrack) {
       throw new NotFoundException(`Track with id ${id} wasn't found`);
@@ -63,16 +65,17 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(204)
-  deleteTrack(@Param('id') id: string) {
+  async deleteTrack(@Param('id') id: string) {
     if (!isUuid(id)) {
       throw new BadRequestException('Invalid UUID');
     }
-    const trackToDelete = this.trackService.getById(id);
+
+    const trackToDelete = await this.trackService.getById(id);
 
     if (!trackToDelete) {
       throw new NotFoundException(`Track with id ${id} wasn't found`);
     }
 
-    this.trackService.delete(id);
+    await this.trackService.delete(id);
   }
 }

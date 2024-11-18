@@ -59,7 +59,7 @@ export class ArtistService {
 
     await this.artistRepository.delete({ id });
     await this.albumService.clearArtistId(id);
-    // await this.trackService.clearArtistId(id);
+    await this.trackService.clearArtistId(id);
     this.trackService.clearArtistId(id);
   }
 }

@@ -12,6 +12,7 @@ import { AlbumModule } from './album/album.module';
 import { FavoritesModule } from './favorites/favorites.module';
 import { ArtistEntity } from './artist/models/artist.entity';
 import { AlbumEntity } from './album/models/album.entity';
+import { TrackEntity } from './track/models/track.entity';
 
 @Module({
   imports: [
@@ -26,7 +27,7 @@ import { AlbumEntity } from './album/models/album.entity';
       username: process.env.DB_USER,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      entities: [UserEntity, ArtistEntity, AlbumEntity],
+      entities: [UserEntity, ArtistEntity, AlbumEntity, TrackEntity],
       synchronize: true, // для разработки, в продакшене выключить
     }),
     UserModule,

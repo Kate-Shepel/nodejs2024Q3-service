@@ -49,8 +49,7 @@ export class AlbumService {
 
   async delete(id: string): Promise<void> {
     await this.albumRepository.delete({ id });
-
-    //this.trackService.clearAlbumId(id);
+    await this.trackService.clearAlbumId(id);
   }
 
   async clearArtistId(artistId: string): Promise<void> {
