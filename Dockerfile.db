@@ -1,6 +1,1 @@
 FROM postgres:latest
-
-# Установка переменных окружения
-# ENV POSTGRES_USER=postgres
-# ENV POSTGRES_PASSWORD=postgres
-# ENV POSTGRES_DB=my_database
