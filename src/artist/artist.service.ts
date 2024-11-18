@@ -6,12 +6,15 @@ import { ArtistEntity } from './models/artist.entity';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
 import { TrackService } from 'src/track/track.service';
+import { AlbumService } from 'src/album/album.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectRepository(ArtistEntity)
     private readonly artistRepository: Repository<ArtistEntity>,
+    @Inject(forwardRef(() => AlbumService))
+    private readonly albumService: AlbumService,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
   ) {}
@@ -55,7 +58,7 @@ export class ArtistService {
     }
 
     await this.artistRepository.delete({ id });
-    // await this.albumService.clearArtistId(id);
+    await this.albumService.clearArtistId(id);
     // await this.trackService.clearArtistId(id);
     this.trackService.clearArtistId(id);
   }

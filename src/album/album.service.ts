@@ -1,61 +1,62 @@
 import { Injectable, Inject, forwardRef } from '@nestjs/common';
-import { v4 as uuidv4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-import { Album } from './models/album.model';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
 import { TrackService } from '../track/track.service';
+import { AlbumEntity } from './models/album.entity';
 
 @Injectable()
 export class AlbumService {
   constructor(
+    @InjectRepository(AlbumEntity)
+    private readonly albumRepository: Repository<AlbumEntity>,
     @Inject(forwardRef(() => TrackService))
     private readonly trackService: TrackService,
   ) {}
 
-  private albumsArr: Album[] = [];
-
-  getAll(): Album[] {
-    return this.albumsArr;
+  async getAll(): Promise<AlbumEntity[]> {
+    return await this.albumRepository.find();
   }
 
-  getById(id: string): Album | null {
-    return this.albumsArr.find((album) => album.id === id) || null;
+  async getById(id: string): Promise<AlbumEntity | null> {
+    return await this.albumRepository.findOneBy({ id });
   }
 
-  create(albumCreateData: CreateAlbumDto): Album {
-    const freshAlbum: Album = {
-      id: uuidv4(),
-      ...albumCreateData,
-    };
-
-    this.albumsArr.push(freshAlbum);
-    return freshAlbum;
+  async create(albumCreateData: CreateAlbumDto): Promise<AlbumEntity> {
+    const freshAlbum = this.albumRepository.create(albumCreateData);
+    return await this.albumRepository.save(freshAlbum);
   }
 
-  update(id: string, albumUpdateData: UpdateAlbumDto): Album | null {
-    const index = this.albumsArr.findIndex((album) => album.id === id);
+  async update(
+    id: string,
+    albumUpdateData: UpdateAlbumDto,
+  ): Promise<AlbumEntity | null> {
+    const existingAlbum = await this.getById(id);
 
-    if (index === -1) return null;
+    if (!existingAlbum) {
+      return null;
+    }
 
-    const amendedAlbum = {
-      ...this.albumsArr[index],
-      ...albumUpdateData,
-    };
+    const amendedAlbum = this.albumRepository.merge(
+      existingAlbum,
+      albumUpdateData,
+    );
 
-    this.albumsArr[index] = amendedAlbum;
-    return amendedAlbum;
+    return await this.albumRepository.save(amendedAlbum);
   }
 
-  delete(id: string): void {
-    this.albumsArr = this.albumsArr.filter((album) => album.id !== id);
+  async delete(id: string): Promise<void> {
+    await this.albumRepository.delete({ id });
 
-    this.trackService.clearAlbumId(id);
+    //this.trackService.clearAlbumId(id);
   }
 
-  clearArtistId(artistId: string): void {
-    this.albumsArr = this.albumsArr.map((album) =>
-      album.artistId === artistId ? { ...album, artistId: null } : album,
+  async clearArtistId(artistId: string): Promise<void> {
+    await this.albumRepository.update(
+      { artistId },
+      { artistId: null },
     );
   }
 }
