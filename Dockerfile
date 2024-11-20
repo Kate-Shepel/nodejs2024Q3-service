@@ -1,6 +1,8 @@
 # Используем официальный образ Node.js
 FROM node:22-alpine
 
+RUN apk add --no-cache python3 make g++ gcc
+
 # Устанавливаем рабочую директорию внутри контейнера
 WORKDIR /usr/src/app
 
