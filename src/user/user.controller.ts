@@ -7,6 +7,7 @@ import {
   Param,
   Body,
   HttpCode,
+  UseGuards,
 } from '@nestjs/common';
 import { NotFoundException, BadRequestException } from '@nestjs/common';
 import { validate as isUuid } from 'uuid';
@@ -14,7 +15,10 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdatePasswordDto } from './dto/update-user.dto';
 
+import { AuthGuard } from '../auth/auth.guard';
+
 @Controller('user')
+@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

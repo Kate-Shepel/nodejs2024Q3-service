@@ -1,8 +1,10 @@
 import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { UserEntity } from './user/models/user.entity';
+import { JwtModule } from '@nestjs/jwt';
+import { APP_GUARD } from '@nestjs/core';
 
+import { UserEntity } from './user/models/user.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
@@ -14,6 +16,8 @@ import { ArtistEntity } from './artist/models/artist.entity';
 import { AlbumEntity } from './album/models/album.entity';
 import { TrackEntity } from './track/models/track.entity';
 import { FavoritesEntity } from './favorites/models/favorites.entity';
+import { AuthGuard } from './auth/auth.guard';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -35,15 +39,26 @@ import { FavoritesEntity } from './favorites/models/favorites.entity';
         TrackEntity,
         FavoritesEntity,
       ],
-      synchronize: true, // для разработки, в продакшене выключить
+      synchronize: true,
+    }),
+    JwtModule.register({
+      secret: process.env.JWT_SECRET_KEY,
+      signOptions: { expiresIn: '1h' },
     }),
     UserModule,
     FavoritesModule,
+    AuthModule,
     forwardRef(() => ArtistModule),
     forwardRef(() => TrackModule),
     forwardRef(() => AlbumModule),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard,
+    },
+  ],
 })
 export class AppModule {}
