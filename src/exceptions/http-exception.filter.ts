@@ -25,8 +25,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       msg = exception.getResponse();
     }
 
-    const logMsg =
-      typeof msg === 'string' ? msg : JSON.stringify(msg);
+    const logMsg = typeof msg === 'string' ? msg : JSON.stringify(msg);
 
     this.loggingService.error(
       `Error: ${logMsg}\nRequest: ${req.method} ${req.url}`,

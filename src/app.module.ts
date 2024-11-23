@@ -1,4 +1,9 @@
-import { Module, forwardRef, MiddlewareConsumer, NestModule } from '@nestjs/common';
+import {
+  Module,
+  forwardRef,
+  MiddlewareConsumer,
+  NestModule,
+} from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -20,7 +25,6 @@ import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
 import { LoggingService } from './logging/logging.service';
 import { LoggingMiddleware } from './middleware/logging.middleware';
-import { HttpExceptionFilter } from './exceptions/http-exception.filter';
 
 @Module({
   imports: [
@@ -62,9 +66,9 @@ import { HttpExceptionFilter } from './exceptions/http-exception.filter';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
-    LoggingService
+    LoggingService,
   ],
-  exports: [LoggingService]
+  exports: [LoggingService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {

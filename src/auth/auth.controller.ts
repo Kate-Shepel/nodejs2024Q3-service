@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Post,
-  Body,
-  BadRequestException
-} from '@nestjs/common';
+import { Controller, Post, Body, BadRequestException } from '@nestjs/common';
 
 import { AuthService } from './auth.service';
 import { CreateUserDto } from '../user/dto/create-user.dto';
@@ -22,7 +17,9 @@ export class AuthController {
   }
 
   @Post('login')
-  async login(@Body() { login, password }: { login: string; password: string }) {
+  async login(
+    @Body() { login, password }: { login: string; password: string },
+  ) {
     if (!login || !password) {
       throw new BadRequestException('Login and password are required.');
     }

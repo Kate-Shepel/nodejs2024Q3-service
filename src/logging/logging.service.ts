@@ -7,7 +7,8 @@ export class LoggingService {
   private errorFilePath: string = path.join(__dirname, '../../logs/error.log');
   private logFilePath: string = path.join(__dirname, '../../logs/app.log');
   private logLevel: string = process.env.LOG_LEVEL || 'info';
-  private maxLogFileSize: number = parseInt(process.env.LOG_FILE_MAX_SIZE_KB || '1024', 10) * 1024;
+  private maxLogFileSize: number =
+    parseInt(process.env.LOG_FILE_MAX_SIZE_KB || '1024', 10) * 1024;
 
   constructor() {
     const logDirectory = path.dirname(this.logFilePath);
@@ -20,7 +21,10 @@ export class LoggingService {
   }
 
   private archiveIfExceedsSize(filePath: string) {
-    if (fs.existsSync(filePath) && fs.statSync(filePath).size > this.maxLogFileSize) {
+    if (
+      fs.existsSync(filePath) &&
+      fs.statSync(filePath).size > this.maxLogFileSize
+    ) {
       const archivePath = `${filePath}.${Date.now()}`;
       fs.renameSync(filePath, archivePath);
     }
@@ -34,13 +38,19 @@ export class LoggingService {
   log(msg: string) {
     if (this.logLevel === 'info') {
       console.log(msg);
-      this.createLog(this.logFilePath, `[INFO] ${new Date().toISOString()} - ${msg}`);
+      this.createLog(
+        this.logFilePath,
+        `[INFO] ${new Date().toISOString()} - ${msg}`,
+      );
     }
   }
 
   error(msg: string, trace?: string) {
     console.error(msg);
-    this.createLog(this.errorFilePath, `[ERROR] ${new Date().toISOString()} - ${msg}`);
+    this.createLog(
+      this.errorFilePath,
+      `[ERROR] ${new Date().toISOString()} - ${msg}`,
+    );
     if (trace) {
       this.createLog(this.errorFilePath, trace);
     }
@@ -49,8 +59,10 @@ export class LoggingService {
   warn(msg: string) {
     if (['info', 'warn'].includes(this.logLevel)) {
       console.warn(msg);
-      this.createLog(this.logFilePath, `[WARN] ${new Date().toISOString()} - ${msg}`);
+      this.createLog(
+        this.logFilePath,
+        `[WARN] ${new Date().toISOString()} - ${msg}`,
+      );
     }
   }
-
 }
