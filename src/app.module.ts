@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module, forwardRef, MiddlewareConsumer, NestModule } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
@@ -18,6 +18,9 @@ import { TrackEntity } from './track/models/track.entity';
 import { FavoritesEntity } from './favorites/models/favorites.entity';
 import { AuthGuard } from './auth/auth.guard';
 import { AuthModule } from './auth/auth.module';
+import { LoggingService } from './logging/logging.service';
+import { LoggingMiddleware } from './middleware/logging.middleware';
+import { HttpExceptionFilter } from './exceptions/http-exception.filter';
 
 @Module({
   imports: [
@@ -59,6 +62,12 @@ import { AuthModule } from './auth/auth.module';
       provide: APP_GUARD,
       useClass: AuthGuard,
     },
+    LoggingService
   ],
+  exports: [LoggingService]
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggingMiddleware).forRoutes('*');
+  }
+}
